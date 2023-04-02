@@ -2,7 +2,7 @@ import chai from 'chai';
 import axios from 'axios';
 import jsonData from '../env.json' assert { type : "json" };
 import { createRandomUser, getEmail, getName, getPhone} from "../utils/randomUtils.js";
-import { saveUserToJson, saveToken } from '../utils/utils.js';
+import { saveUserToJson, saveToken, getRandomUserFromFile } from '../utils/utils.js';
 
 
 describe("User Creation", () => {
@@ -19,7 +19,37 @@ describe("User Creation", () => {
         saveToken(response.token);
     });
 
-    
+    it.only("Admin can not create user with existing user data", async () => {
+        var randomUser = getRandomUserFromFile();
+        var name = randomUser.name;
+        var email = randomUser.email;
+        var phone_number = randomUser.phone_number;
+        var password = randomUser.phone_number;
+        var nid = "12345789"
+        var role = "Customer";
+
+        const response = await axios.post(`${jsonData.baseUrl}/user/create`,
+        {
+            "name": name,
+            "email": email,
+            "password": password,
+            "phone_number": phone_number,
+            "nid": nid,
+            "role": role
+        },
+        {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": jsonData.token,
+                "X-AUTH-SECRET-KEY": jsonData.secretKey
+            }
+        }).then((res) => res.data)
+        .catch((err) => err);
+
+        chai.expect(response.message).contains("User already exists");
+
+
+    })
 
     it("Admin can create customer", async () => {
         var name = getName();

@@ -1,15 +1,17 @@
-import { createRandomUser, getEmail, getName, getPhone} from "./utils/randomUtils.js";
+import { createRandomUser, generateNumber, getEmail, getName, getPhone} from "./utils/randomUtils.js";
 import { saveUserToJson } from './utils/utils.js';
+import userData from './users.json' assert {type : "json"};
+import configData from '../env.json' assert { type : "json" };
+import fs from 'fs';
 
 
-var name = getName();
-var email = getEmail();
-var phone_number = getPhone();
-var password = "1234";
-var nid = "12345789"
-var role = "Agent";
-var id = 12346;
+function getRandomUserFromFile(){
+    var randomNumber = generateNumber(0, userData.length);
+    return userData[randomNumber]
 
-var newUser = createRandomUser(id, name, email, password, phone_number, nid, role);
+}
 
-saveUserToJson(newUser);
+getRandomUserFromFile();
+
+
+
