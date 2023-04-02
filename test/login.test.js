@@ -1,7 +1,7 @@
-const { expect } = require('chai');
-const axios = require('axios');
-const jsonData = require('../env.json');
-const fs = require('fs');
+import chai from 'chai';
+import axios from 'axios';
+import jsonData from '../env.json' assert { type : "json" };
+import { saveUserToJson, saveToken } from '../utils/utils.js';
 
 
 describe("User can do login", () => {
@@ -17,7 +17,7 @@ describe("User can do login", () => {
                 }
             })
             .catch((err) => err.response);
-        expect(response.data.message).contains("User not found");
+        chai.expect(response.data.message).contains("User not found");
 
     });
 
@@ -33,7 +33,7 @@ describe("User can do login", () => {
                 }
             })
             .catch((err) => err.response);
-        expect(response.data.message).contains("Password incorrect");
+        chai.expect(response.data.message).contains("Password incorrect");
 
     });
 
@@ -48,8 +48,7 @@ describe("User can do login", () => {
                 "Content-Type": "application/json"
             }).then((res) => res.data)
 
-        expect(response.message).contains("Login successfully");
-        jsonData.token = response.token;
-        fs.writeFileSync('env.json', JSON.stringify(jsonData));
+        chai.expect(response.message).contains("Login successfully");
+        saveToken(response.token);
     });
 });
