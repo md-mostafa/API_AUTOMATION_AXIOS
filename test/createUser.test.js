@@ -19,7 +19,7 @@ describe("User Creation", () => {
         saveToken(response.token);
     });
 
-    it.only("Admin can not create user with existing user data", async () => {
+    it("Admin can not create user with existing user data", async () => {
         var randomUser = getRandomUserFromFile();
         var name = randomUser.name;
         var email = randomUser.email;
@@ -49,7 +49,7 @@ describe("User Creation", () => {
         chai.expect(response.message).contains("User already exists");
 
 
-    })
+    });
 
     it("Admin can create customer", async () => {
         var name = getName();
