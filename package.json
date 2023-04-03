@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "mocha test/login.test.js test/createUser.test.js test/searchUser.test.js test/depositToAgent.test.js test/depositToCustomer.test.js test/checkCustomerBalance.test.js test/statement.test.js test/withdraw.test.js test/sendMoney.test.js  --reporter mochawesome --reporter-options reportDir=Reports, reportFilename=report.html"
+    "test": "mocha test/login.test.js test/createUser.test.js test/searchUser.test.js test/depositToAgent.test.js test/depositToCustomer.test.js test/checkCustomerBalance.test.js test/statement.test.js test/withdraw.test.js test/sendMoney.test.js  --reporter mochawesome --reporter-options reportDir=Reports, reportFilename=report.html, json=true, html=true, charts=true, overwrite=true"
   },
   "keywords": [],
   "author": "",

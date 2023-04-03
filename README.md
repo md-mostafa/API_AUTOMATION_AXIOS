@@ -12,6 +12,7 @@ This project utilizes Mocha, Axios, and Mochawesome to automate dmoney API. Posi
 | Programming Language     | **Javascript**         |
 | Http Client            | **Axios** |
 | Testing Framework        | **Mocha**       |
+| Assertion Library        | **Chai**       |
 | Reporter | **mochawesome**       |
 | IDE                      | **VScode**     |
 
