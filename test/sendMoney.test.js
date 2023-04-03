@@ -3,8 +3,7 @@ import axios from 'axios';
 import { getRandomUser, getTwoCustomersFromFile, saveToken, updateUser } from '../utils/utils.js';
 import configData from '../config/env.json' assert { type: "json" };
 
-
-describe("Withdraw Money", () => {
+describe("Send Money", () => {
     before(async () => {
         var response = await axios.post(`${configData.baseUrl}/user/login`,
             {
@@ -18,13 +17,14 @@ describe("Withdraw Money", () => {
                 }
             }).then((res) => res.data);
 
-        saveToken(response.token)
+        saveToken(response.token);
+
     });
 
 
-    it("Withdraw money from invalid agent number", async () => {
+    it("Send money should not be successful to an invalid customer", async () => {
         let randomUser = getRandomUser("Customer", true);
-        const response = await axios.post(`${configData.baseUrl}/transaction/withdraw`,
+        const response = await axios.post(`${configData.baseUrl}/transaction/sendmoney`,
             {
                 "from_account": `${randomUser.phone_number}`,
                 "to_account": "232",
@@ -36,20 +36,21 @@ describe("Withdraw Money", () => {
                     "Authorization": configData.token,
                     "X-AUTH-SECRET-KEY": configData.secretKey
                 }
-            }).then((res) => res)
+            }).then((res) => res.data)
             .catch((err) => err.response);
 
-        chai.expect(response.data.message).contains("Account does not exist");
+
+        chai.expect(response.data.message).contains("From/To Account does not exist");
 
     });
 
-
-    it("Withdraw money from another customer", async () => {
-        let userList = getTwoCustomersFromFile();
-        const response = await axios.post(`${configData.baseUrl}/transaction/withdraw`,
+    it("Send money should not be successful to an agent", async () => {
+        let randomUser = getRandomUser("Customer", true);
+        let randomAgent = getRandomUser("Agent", false);
+        const response = await axios.post(`${configData.baseUrl}/transaction/sendmoney`,
             {
-                "from_account": `${userList[0].phone_number}`,
-                "to_account": `${userList[1].phone_number}`,
+                "from_account": `${randomUser.phone_number}`,
+                "to_account": `${randomAgent.phone_number}`,
                 "amount": 50
             },
             {
@@ -58,22 +59,21 @@ describe("Withdraw Money", () => {
                     "Authorization": configData.token,
                     "X-AUTH-SECRET-KEY": configData.secretKey
                 }
-            }).then((res) => res)
+            }).then((res) => res.data)
             .catch((err) => err.response);
-        chai.expect(response.data.message).contains("Customer can not withdraw money from another customer");
+
+        chai.expect(response.message).contains("From/To account should not be an agent account");
 
     });
 
-
-    it("Withdraw money from valid agent", async () => {
-        let randomUser = getRandomUser("Customer", true);
-        let randomAgent = getRandomUser("Agent", false);
+    it("Send money should be successful to a valid user", async () => {
+        let randomUser1 = getRandomUser("Customer", true);
+        let randomUser2 = getRandomUser("Customer", false);
         let amount = 50;
-
-        const response = await axios.post(`${configData.baseUrl}/transaction/withdraw`,
+        const response = await axios.post(`${configData.baseUrl}/transaction/sendmoney`,
             {
-                "from_account": `${randomUser.phone_number}`,
-                "to_account": `${randomAgent.phone_number}`,
+                "from_account": `${randomUser1.phone_number}`,
+                "to_account": `${randomUser2.phone_number}`,
                 "amount": amount
             },
             {
@@ -85,18 +85,13 @@ describe("Withdraw Money", () => {
             }).then((res) => res.data)
             .catch((err) => err.response);
 
-        let balanceBeforeWithdrawing = randomUser.balance;
+        let balanceBeforeSendMoney = randomUser1.balance;
         let fee = response.fee;
-        let expectedBalance = balanceBeforeWithdrawing - fee - amount;
+        let expectedBalance = balanceBeforeSendMoney - fee - amount;
 
-
-        chai.expect(response.message).contains("Withdraw successful");
+        chai.expect(response.message).contains("Send money successful");
         chai.expect(response.currentBalance).equals(expectedBalance);
 
-        randomUser.balance = response.currentBalance;
-        updateUser(randomUser);
-
     });
-
 
 });

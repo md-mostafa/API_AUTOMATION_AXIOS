@@ -1,22 +1,28 @@
 import chai from 'chai';
 import axios from 'axios';
-import configData from '../config/env.json' assert { type : "json" };
-import { createRandomUser, getEmail, getName, getPhone} from "../utils/randomUtils.js";
+import configData from '../config/env.json' assert { type: "json" };
+import { createRandomUser, getEmail, getName, getPhone } from "../utils/randomUtils.js";
 import { saveUserToJson, saveToken, getRandomUser } from '../utils/utils.js';
 
 
 describe("User Creation", () => {
     before(async () => {
-        const response = await axios.post(`${configData.baseUrl}/user/login`,
+        var response = await axios.post(`${configData.baseUrl}/user/login`,
             {
                 "email": "salman@roadtocareer.net",
                 "password": "1234"
             },
             {
-                "Content-Type": "application/json"
-            }).then((res) => res.data);
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": configData.token
+                }
+            }).then((res) => {
+                saveToken(res.data.token);
+              
+            });
 
-        saveToken(response.token);
+
     });
 
     it("Admin can not create user with existing user data", async () => {
@@ -29,23 +35,22 @@ describe("User Creation", () => {
         var role = "Customer";
 
         const response = await axios.post(`${configData.baseUrl}/user/create`,
-        {
-            "name": name,
-            "email": email,
-            "password": password,
-            "phone_number": phone_number,
-            "nid": nid,
-            "role": role
-        },
-        {
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": configData.token,
-                "X-AUTH-SECRET-KEY": configData.secretKey
-            }
-        }).then((res) => res.data)
-        .catch((err) => err);
-
+            {
+                "name": name,
+                "email": email,
+                "password": password,
+                "phone_number": phone_number,
+                "nid": nid,
+                "role": role
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": configData.token,
+                    "X-AUTH-SECRET-KEY": configData.secretKey
+                }
+            }).then((res) => res.data)
+            .catch((err) => err);
         chai.expect(response.message).contains("User already exists");
 
 
