@@ -48,7 +48,6 @@ export function updateUser(newUser){
         if(user.id == newUser.id){
             user = newUser;
             fs.writeFileSync(USERS_FILE_PATH, JSON.stringify(userData));
-            console.log("Updated to user data");
             return;
         }
     });

@@ -1,13 +1,13 @@
 import chai from 'chai';
 import axios from 'axios';
-import configData from '../config/env.json' assert { type : "json" };
+import configData from '../config/env.json' assert { type: "json" };
 import { saveToken, getTwoCustomersFromFile, getRandomUser, saveUserToJson } from '../utils/utils.js';
-import { getName, getEmail, getPhone, createRandomUser} from '../utils/randomUtils.js';
+import { getName, getEmail, getPhone, createRandomUser } from '../utils/randomUtils.js';
 
 
 describe("Deposit To Customer", () => {
     before(async () => {
-        const response = await axios.post(`${configData.baseUrl}/user/login`,
+        let response = await axios.post(`${configData.baseUrl}/user/login`,
             {
                 "email": "salman@roadtocareer.net",
                 "password": "1234"
@@ -17,9 +17,7 @@ describe("Deposit To Customer", () => {
             }).then((res) => res.data);
 
         saveToken(response.token);
-    });
 
-    before(async () => {
         var name = getName();
         var email = getEmail();
         var phone_number = getPhone();
@@ -28,7 +26,7 @@ describe("Deposit To Customer", () => {
         var role = "Customer";
         var id;
 
-        const response = await axios.post(`${configData.baseUrl}/user/create`,
+        response = await axios.post(`${configData.baseUrl}/user/create`,
             {
                 "name": name,
                 "email": email,
@@ -48,7 +46,6 @@ describe("Deposit To Customer", () => {
 
         id = response.user.id;
         saveUserToJson(createRandomUser(id, name, email, password, phone_number, nid, role));
-
     });
 
     it("Deposit to customer from customer account", async () => {

@@ -45,7 +45,7 @@ describe("Deposit To Agent", () => {
             {
                 "from_account": "SYSTEM",
                 "to_account": `${randomAgent.phone_number}`,
-                "amount": 5000
+                "amount": 3000
             },
             {
                 headers: {

@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "mocha test/**/*.js"
+    "test": "mocha test/login.test.js test/createUser.test.js test/searchUser.test.js test/depositToAgent.test.js test/depositToCustomer.test.js test/checkCustomerBalance.test.js"
   },
   "keywords": [],
   "author": "",
