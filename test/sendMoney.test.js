@@ -92,6 +92,9 @@ describe("Send Money", () => {
         chai.expect(response.message).contains("Send money successful");
         chai.expect(response.currentBalance).equals(expectedBalance);
 
+        randomUser1.balance = response.currentBalance;
+        updateUser(randomUser1);
+
     });
 
 });
