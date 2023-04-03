@@ -48,7 +48,7 @@ describe("Deposit To Customer", () => {
             {
                 "from_account": `${randomAgent.phone_number}`,
                 "to_account": `${randomCustomer.phone_number}`,
-                "amount": 10
+                "amount": 1000
             },
             {
                 headers: {

@@ -1,10 +1,10 @@
 import chai from 'chai';
 import axios from 'axios';
 import jsonData from '../env.json' assert { type: "json" };
-import { saveToken, getRandomAgentFromFile } from '../utils/utils.js';
+import { saveToken, getRandomAgentFromFile, getTwoCustomersFromFile, getRandomCustomerFromFile, updateUser } from '../utils/utils.js';
 
 
-describe("Deposit To Agent", () => {
+describe("Check customer balance after deposit", () => {
     before(async () => {
         const response = await axios.post(`${jsonData.baseUrl}/user/login`,
             {
@@ -18,34 +18,27 @@ describe("Deposit To Agent", () => {
         saveToken(response.token);
     });
 
-    it("Deposit to agent with invalid phone", async () => {
-        const response = await axios.post(`${jsonData.baseUrl}/transaction/deposit`,
-            {
-                "from_account": "SYSTEM",
-                "to_account": "0987439873985",
-                "amount": 1000
-            },
+    it("Check customer balance with invalid phone", async () => {
+        let invalidPhone = "24324234231";
+
+        const response = await axios.get(`${jsonData.baseUrl}/transaction/balance/${invalidPhone}`,
             {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": jsonData.token,
                     "X-AUTH-SECRET-KEY": jsonData.secretKey
                 }
-            }).then((res) => res)
+            }).then((res) => res.data)
             .catch((err) => err.response.data);
-
-        chai.expect(response.message).contains("Account does not exist");
+        
+        chai.expect(response.message).contains("User not found");
     });
 
+    it("Check customer balance with valid creds", async () => {
+        let user = getRandomCustomerFromFile();
 
-    it("Deposit to agent with valid phone", async () => {
-        let randomAgent = getRandomAgentFromFile();
-        const response = await axios.post(`${jsonData.baseUrl}/transaction/deposit`,
-            {
-                "from_account": "SYSTEM",
-                "to_account": `${randomAgent.phone_number}`,
-                "amount": 5000
-            },
+
+        const response = await axios.get(`${jsonData.baseUrl}/transaction/balance/${user.phone_number}`,
             {
                 headers: {
                     "Content-Type": "application/json",
@@ -55,7 +48,10 @@ describe("Deposit To Agent", () => {
             }).then((res) => res.data)
             .catch((err) => err.response.data);
 
-        chai.expect(response.message).contains("Deposit successful");
+        chai.expect(response.message).contains("User balance");
+        user["balance"] = response.balance;
+        updateUser(user);
     });
+
 
 });

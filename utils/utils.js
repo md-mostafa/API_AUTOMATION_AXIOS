@@ -53,3 +53,15 @@ export function getTwoCustomersFromFile(){
         }
     }
 }
+
+
+export function updateUser(newUser){
+    userData.forEach((user) => {
+        if(user.id == newUser.id){
+            user = newUser;
+            fs.writeFileSync('users.json', JSON.stringify(userData));
+            console.log("Updated to user data");
+            return;
+        }
+    });
+}
