@@ -20,7 +20,7 @@ describe("User Creation", () => {
     });
 
     it("Admin can not create user with existing user data", async () => {
-        var randomUser = getRandomUser("Customer");
+        var randomUser = getRandomUser("Customer", false);
         var name = randomUser.name;
         var email = randomUser.email;
         var phone_number = randomUser.phone_number;

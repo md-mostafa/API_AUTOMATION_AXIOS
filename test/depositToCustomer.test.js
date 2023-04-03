@@ -1,7 +1,7 @@
 import chai from 'chai';
 import axios from 'axios';
 import configData from '../config/env.json' assert { type: "json" };
-import { saveToken, getTwoCustomersFromFile, getRandomUser, saveUserToJson } from '../utils/utils.js';
+import { saveToken, getTwoCustomersFromFile, getRandomUser, saveUserToJson, updateUser } from '../utils/utils.js';
 import { getName, getEmail, getPhone, createRandomUser } from '../utils/randomUtils.js';
 
 
@@ -52,7 +52,7 @@ describe("Deposit To Customer", () => {
         let customerList = getTwoCustomersFromFile();
         let customer1 = customerList[0];
         let customer2 = customerList[1];
-
+    
         const response = await axios.post(`${configData.baseUrl}/transaction/deposit`,
             {
                 "from_account": `${customer1.phone_number}`,
@@ -72,13 +72,14 @@ describe("Deposit To Customer", () => {
     });
 
     it("Deposit to valid customer from valid agent", async () => {
-        let randomAgent = getRandomUser("Agent");
-        let randomCustomer = getRandomUser("Customer");
+        let randomAgent = getRandomUser("Agent", false);
+        let randomCustomer = getRandomUser("Customer", false);
+        let amount = 1000;
         const response = await axios.post(`${configData.baseUrl}/transaction/deposit`,
             {
                 "from_account": `${randomAgent.phone_number}`,
                 "to_account": `${randomCustomer.phone_number}`,
-                "amount": 1000
+                "amount": amount
             },
             {
                 headers: {
@@ -90,6 +91,9 @@ describe("Deposit To Customer", () => {
             .catch((err) => err.response.data);
 
         chai.expect(response.message).contains("Deposit successful");
+        
+        randomCustomer["balance"] = 1000;
+        updateUser(randomCustomer);
     });
 
 

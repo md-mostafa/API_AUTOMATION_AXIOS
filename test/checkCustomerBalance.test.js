@@ -35,7 +35,7 @@ describe("Check customer balance after deposit", () => {
     });
 
     it("Check customer balance with valid creds", async () => {
-        let user = getRandomUser("Customer");
+        let user = getRandomUser("Customer", false);
 
 
         const response = await axios.get(`${configData.baseUrl}/transaction/balance/${user.phone_number}`,

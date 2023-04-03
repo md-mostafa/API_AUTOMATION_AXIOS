@@ -20,21 +20,28 @@ export function saveToken(token){
 }
 
 
-export function getRandomUser(role){
+export function getRandomUser(role, balance){
+
     while(true){
         let randomNumber = generateNumber(0, userData.length);
         let randomUser = userData[randomNumber];
-        if(randomUser.role == role){
+        if(randomUser.role == role && !balance){
             return randomUser;
+        }
+
+        if(randomUser.role == role && balance && randomUser.balance && randomUser.balance > 0){
+            return randomUser;
+            
         }
     }
 }
 
 
+
 export function getTwoCustomersFromFile(){
     while(true){
-        let customer1 = getRandomUser("Customer");
-        let customer2 = getRandomUser("Customer");
+        let customer1 = getRandomUser("Customer", false);
+        let customer2 = getRandomUser("Customer", false);
 
         if(customer1.phone_number !== customer2.phone_number){
             return [customer1, customer2]

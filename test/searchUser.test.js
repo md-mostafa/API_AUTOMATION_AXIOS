@@ -36,7 +36,7 @@ describe("Search User", () => {
 
 
     it("Search user by valid phone", async () => {
-        var user = getRandomUser("Customer");
+        var user = getRandomUser("Customer", false);
         var phone_number = user.phone_number;
         const response = await axios.get(`${configData.baseUrl}/user/search/phonenumber/${phone_number}`,
             {

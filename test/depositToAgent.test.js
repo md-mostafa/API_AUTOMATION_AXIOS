@@ -40,7 +40,7 @@ describe("Deposit To Agent", () => {
 
 
     it("Deposit to agent with valid phone", async () => {
-        let randomAgent = getRandomUser("Agent");
+        let randomAgent = getRandomUser("Agent", false);
         const response = await axios.post(`${configData.baseUrl}/transaction/deposit`,
             {
                 "from_account": "SYSTEM",

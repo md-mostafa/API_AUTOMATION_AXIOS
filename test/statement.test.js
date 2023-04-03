@@ -35,7 +35,7 @@ describe("Check statement", () => {
     });
 
     it("Check customer statement with valid creds", async () => {
-        let randomUser = getRandomUser("Customer");
+        let randomUser = getRandomUser("Customer", false);
         const response = await axios.get(`${configData.baseUrl}/transaction/balance/${randomUser.phone_number}`,
             {
                 headers: {
