@@ -1,11 +1,23 @@
 import chai from 'chai';
 import axios from 'axios';
 import jsonData from '../env.json' assert { type: "json" };
-import { createRandomUser, getEmail, getName, getPhone } from "../utils/randomUtils.js";
-import { saveUserToJson, saveToken, getRandomUserFromFile } from '../utils/utils.js';
+import { getRandomUserFromFile } from '../utils/utils.js';
 
 
 describe("Search User", () => {
+    before(async () => {
+        const response = await axios.post(`${jsonData.baseUrl}/user/login`,
+            {
+                "email": "salman@roadtocareer.net",
+                "password": "1234"
+            },
+            {
+                "Content-Type": "application/json"
+            }).then((res) => res.data);
+
+        saveToken(response.token);
+    });
+
 
     it("Search user by invalid phone", async () => {
         const response = await axios.get(`${jsonData.baseUrl}/user/search/phonenumber/1111`,

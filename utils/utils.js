@@ -21,5 +21,16 @@ export function saveToken(token){
 export function getRandomUserFromFile(){
     var randomNumber = generateNumber(0, userData.length);
     return userData[randomNumber]
+}
 
+export function getRandomAgentFromFile(){
+    while(true){
+        let randomNumber = generateNumber(0, userData.length);
+        let randomUser = userData[randomNumber];
+        if(randomUser.role == "Agent"){
+            return randomUser;
+        }
+    }
+    
+    
 }
