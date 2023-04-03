@@ -1,12 +1,13 @@
 import chai from 'chai';
 import axios from 'axios';
-import jsonData from '../env.json' assert { type: "json" };
-import { saveToken, getRandomAgentFromFile } from '../utils/utils.js';
+import configData from '../config/env.json' assert { type : "json" };
+import { saveToken, getRandomUser } from '../utils/utils.js';
+
 
 
 describe("Deposit To Agent", () => {
     before(async () => {
-        const response = await axios.post(`${jsonData.baseUrl}/user/login`,
+        const response = await axios.post(`${configData.baseUrl}/user/login`,
             {
                 "email": "salman@roadtocareer.net",
                 "password": "1234"
@@ -19,7 +20,7 @@ describe("Deposit To Agent", () => {
     });
 
     it("Deposit to agent with invalid phone", async () => {
-        const response = await axios.post(`${jsonData.baseUrl}/transaction/deposit`,
+        const response = await axios.post(`${configData.baseUrl}/transaction/deposit`,
             {
                 "from_account": "SYSTEM",
                 "to_account": "0987439873985",
@@ -28,8 +29,8 @@ describe("Deposit To Agent", () => {
             {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": jsonData.token,
-                    "X-AUTH-SECRET-KEY": jsonData.secretKey
+                    "Authorization": configData.token,
+                    "X-AUTH-SECRET-KEY": configData.secretKey
                 }
             }).then((res) => res)
             .catch((err) => err.response.data);
@@ -39,8 +40,8 @@ describe("Deposit To Agent", () => {
 
 
     it("Deposit to agent with valid phone", async () => {
-        let randomAgent = getRandomAgentFromFile();
-        const response = await axios.post(`${jsonData.baseUrl}/transaction/deposit`,
+        let randomAgent = getRandomUser("Agent");
+        const response = await axios.post(`${configData.baseUrl}/transaction/deposit`,
             {
                 "from_account": "SYSTEM",
                 "to_account": `${randomAgent.phone_number}`,
@@ -49,8 +50,8 @@ describe("Deposit To Agent", () => {
             {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": jsonData.token,
-                    "X-AUTH-SECRET-KEY": jsonData.secretKey
+                    "Authorization": configData.token,
+                    "X-AUTH-SECRET-KEY": configData.secretKey
                 }
             }).then((res) => res.data)
             .catch((err) => err.response.data);

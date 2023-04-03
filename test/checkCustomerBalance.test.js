@@ -1,12 +1,12 @@
 import chai from 'chai';
 import axios from 'axios';
-import jsonData from '../env.json' assert { type: "json" };
-import { saveToken, getRandomAgentFromFile, getTwoCustomersFromFile, getRandomCustomerFromFile, updateUser } from '../utils/utils.js';
+import configData from '../config/env.json' assert { type : "json" };
+import { saveToken, getRandomUser, updateUser } from '../utils/utils.js';
 
 
 describe("Check customer balance after deposit", () => {
     before(async () => {
-        const response = await axios.post(`${jsonData.baseUrl}/user/login`,
+        const response = await axios.post(`${configData.baseUrl}/user/login`,
             {
                 "email": "salman@roadtocareer.net",
                 "password": "1234"
@@ -21,12 +21,12 @@ describe("Check customer balance after deposit", () => {
     it("Check customer balance with invalid phone", async () => {
         let invalidPhone = "24324234231";
 
-        const response = await axios.get(`${jsonData.baseUrl}/transaction/balance/${invalidPhone}`,
+        const response = await axios.get(`${configData.baseUrl}/transaction/balance/${invalidPhone}`,
             {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": jsonData.token,
-                    "X-AUTH-SECRET-KEY": jsonData.secretKey
+                    "Authorization": configData.token,
+                    "X-AUTH-SECRET-KEY": configData.secretKey
                 }
             }).then((res) => res.data)
             .catch((err) => err.response.data);
@@ -35,15 +35,15 @@ describe("Check customer balance after deposit", () => {
     });
 
     it("Check customer balance with valid creds", async () => {
-        let user = getRandomCustomerFromFile();
+        let user = getRandomUser("Customer");
 
 
-        const response = await axios.get(`${jsonData.baseUrl}/transaction/balance/${user.phone_number}`,
+        const response = await axios.get(`${configData.baseUrl}/transaction/balance/${user.phone_number}`,
             {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": jsonData.token,
-                    "X-AUTH-SECRET-KEY": jsonData.secretKey
+                    "Authorization": configData.token,
+                    "X-AUTH-SECRET-KEY": configData.secretKey
                 }
             }).then((res) => res.data)
             .catch((err) => err.response.data);

@@ -1,13 +1,13 @@
 import chai from 'chai';
 import axios from 'axios';
-import jsonData from '../env.json' assert { type : "json" };
+import configData from '../config/env.json' assert { type : "json" };
 import { createRandomUser, getEmail, getName, getPhone} from "../utils/randomUtils.js";
-import { saveUserToJson, saveToken, getRandomUserFromFile } from '../utils/utils.js';
+import { saveUserToJson, saveToken, getRandomUser } from '../utils/utils.js';
 
 
 describe("User Creation", () => {
     before(async () => {
-        const response = await axios.post(`${jsonData.baseUrl}/user/login`,
+        const response = await axios.post(`${configData.baseUrl}/user/login`,
             {
                 "email": "salman@roadtocareer.net",
                 "password": "1234"
@@ -20,7 +20,7 @@ describe("User Creation", () => {
     });
 
     it("Admin can not create user with existing user data", async () => {
-        var randomUser = getRandomUserFromFile();
+        var randomUser = getRandomUser("Customer");
         var name = randomUser.name;
         var email = randomUser.email;
         var phone_number = randomUser.phone_number;
@@ -28,7 +28,7 @@ describe("User Creation", () => {
         var nid = "12345789"
         var role = "Customer";
 
-        const response = await axios.post(`${jsonData.baseUrl}/user/create`,
+        const response = await axios.post(`${configData.baseUrl}/user/create`,
         {
             "name": name,
             "email": email,
@@ -40,8 +40,8 @@ describe("User Creation", () => {
         {
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": jsonData.token,
-                "X-AUTH-SECRET-KEY": jsonData.secretKey
+                "Authorization": configData.token,
+                "X-AUTH-SECRET-KEY": configData.secretKey
             }
         }).then((res) => res.data)
         .catch((err) => err);
@@ -60,7 +60,7 @@ describe("User Creation", () => {
         var role = "Customer";
         var id;
 
-        const response = await axios.post(`${jsonData.baseUrl}/user/create`,
+        const response = await axios.post(`${configData.baseUrl}/user/create`,
             {
                 "name": name,
                 "email": email,
@@ -72,8 +72,8 @@ describe("User Creation", () => {
             {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": jsonData.token,
-                    "X-AUTH-SECRET-KEY": jsonData.secretKey
+                    "Authorization": configData.token,
+                    "X-AUTH-SECRET-KEY": configData.secretKey
                 }
             }).then((res) => res.data)
             .catch((err) => err);
@@ -93,7 +93,7 @@ describe("User Creation", () => {
         var role = "Agent";
         var id;
 
-        const response = await axios.post(`${jsonData.baseUrl}/user/create`,
+        const response = await axios.post(`${configData.baseUrl}/user/create`,
             {
                 "name": name,
                 "email": email,
@@ -105,13 +105,12 @@ describe("User Creation", () => {
             {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": jsonData.token,
-                    "X-AUTH-SECRET-KEY": jsonData.secretKey
+                    "Authorization": configData.token,
+                    "X-AUTH-SECRET-KEY": configData.secretKey
                 }
             }).then((res) => res.data)
             .catch((err) => err);
 
-        console.log(response);
         chai.expect(response.message).contains("User created");
         id = response.user.id;
         saveUserToJson(createRandomUser(id, name, email, password, phone_number, nid, role));

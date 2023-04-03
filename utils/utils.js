@@ -1,52 +1,40 @@
-import userData from '../users.json' assert {type : "json"};
-import configData from '../env.json' assert { type : "json" };
+import userData from '../testdata/users.json' assert {type : "json"};
+import configData from '../config/env.json' assert { type : "json" };
 import fs from 'fs';
 import { generateNumber } from './randomUtils.js';
+
+const ENV_FILE_PATH ='config/env.json';
+const USERS_FILE_PATH = 'testdata/users.json';
 
 export function saveUserToJson(user){
     userData.push(user)
    
-    fs.writeFileSync('users.json', JSON.stringify(userData));
-    console.log("Saved to user.json!!");
+    fs.writeFileSync(USERS_FILE_PATH, JSON.stringify(userData));
 }
 
 
 export function saveToken(token){
     configData.token = token;
-    fs.writeFileSync('env.json', JSON.stringify(configData));
-    console.log("Saved to config file");
+    fs.writeFileSync(ENV_FILE_PATH, JSON.stringify(configData));
 
 }
 
-export function getRandomUserFromFile(){
-    var randomNumber = generateNumber(0, userData.length);
-    return userData[randomNumber]
-}
 
-export function getRandomAgentFromFile(){
+export function getRandomUser(role){
     while(true){
         let randomNumber = generateNumber(0, userData.length);
         let randomUser = userData[randomNumber];
-        if(randomUser.role == "Agent"){
+        if(randomUser.role == role){
             return randomUser;
         }
     }
 }
 
-export function getRandomCustomerFromFile(){
-    while(true){
-        let randomNumber = generateNumber(0, userData.length);
-        let randomUser = userData[randomNumber];
-        if(randomUser.role == "Customer"){
-            return randomUser;
-        }
-    }
-}
 
 export function getTwoCustomersFromFile(){
     while(true){
-        let customer1 = getRandomCustomerFromFile();
-        let customer2 = getRandomCustomerFromFile();
+        let customer1 = getRandomUser("Customer");
+        let customer2 = getRandomUser("Customer");
 
         if(customer1.phone_number !== customer2.phone_number){
             return [customer1, customer2]
@@ -59,7 +47,7 @@ export function updateUser(newUser){
     userData.forEach((user) => {
         if(user.id == newUser.id){
             user = newUser;
-            fs.writeFileSync('users.json', JSON.stringify(userData));
+            fs.writeFileSync(USERS_FILE_PATH, JSON.stringify(userData));
             console.log("Updated to user data");
             return;
         }
