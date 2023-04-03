@@ -78,7 +78,6 @@ describe("User Creation", () => {
             }).then((res) => res.data)
             .catch((err) => err);
 
-        console.log(response);
         chai.expect(response.message).contains("User created");
         id = response.user.id;
         saveUserToJson(createRandomUser(id, name, email, password, phone_number, nid, role));

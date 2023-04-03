@@ -1,7 +1,7 @@
 import chai from 'chai';
 import axios from 'axios';
 import jsonData from '../env.json' assert { type : "json" };
-import { saveUserToJson, saveToken } from '../utils/utils.js';
+import { saveToken } from '../utils/utils.js';
 
 
 describe("User can do login", () => {

@@ -1,5 +1,5 @@
 import { createRandomUser, generateNumber, getEmail, getName, getPhone} from "./utils/randomUtils.js";
-import { saveUserToJson } from './utils/utils.js';
+import { getTwoCustomersFromFile, saveUserToJson } from './utils/utils.js';
 import userData from './users.json' assert {type : "json"};
 import configData from '../env.json' assert { type : "json" };
 import fs from 'fs';
@@ -11,7 +11,9 @@ function getRandomUserFromFile(){
 
 }
 
-getRandomUserFromFile();
+let x = getTwoCustomersFromFile();
+console.log(x[0])
+console.log(x[1])
 
 
 

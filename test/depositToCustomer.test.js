@@ -1,10 +1,10 @@
 import chai from 'chai';
 import axios from 'axios';
 import jsonData from '../env.json' assert { type: "json" };
-import { saveToken, getRandomAgentFromFile } from '../utils/utils.js';
+import { saveToken, getRandomAgentFromFile, getTwoCustomersFromFile, getRandomCustomerFromFile } from '../utils/utils.js';
 
 
-describe("Deposit To Agent", () => {
+describe("Deposit To Customer", () => {
     before(async () => {
         const response = await axios.post(`${jsonData.baseUrl}/user/login`,
             {
@@ -18,11 +18,15 @@ describe("Deposit To Agent", () => {
         saveToken(response.token);
     });
 
-    it("Deposit to agent with invalid phone", async () => {
+    it("Deposit to customer from customer account", async () => {
+        let customerList = getTwoCustomersFromFile();
+        let customer1 = customerList[0];
+        let customer2 = customerList[1];
+
         const response = await axios.post(`${jsonData.baseUrl}/transaction/deposit`,
             {
-                "from_account": "SYSTEM",
-                "to_account": "0987439873985",
+                "from_account": `${customer1.phone_number}`,
+                "to_account": `${customer2.phone_number}`,
                 "amount": 1000
             },
             {
@@ -31,19 +35,19 @@ describe("Deposit To Agent", () => {
                     "Authorization": jsonData.token,
                     "X-AUTH-SECRET-KEY": jsonData.secretKey
                 }
-            }).then((res) => res)
+            }).then((res) => res.data)
             .catch((err) => err.response.data);
 
-        chai.expect(response.message).contains("Account does not exist");
+        chai.expect(response.message).contains("Only Agent can deposit money");
     });
 
-
-    it("Deposit to agent with valid phone", async () => {
+    it("Deposit to valid customer from valid agent", async () => {
         let randomAgent = getRandomAgentFromFile();
+        let randomCustomer = getRandomCustomerFromFile();
         const response = await axios.post(`${jsonData.baseUrl}/transaction/deposit`,
             {
-                "from_account": "SYSTEM",
-                "to_account": `${randomAgent.phone_number}`,
+                "from_account": `${randomAgent.phone_number}`,
+                "to_account": `${randomCustomer.phone_number}`,
                 "amount": 10
             },
             {
@@ -57,5 +61,6 @@ describe("Deposit To Agent", () => {
 
         chai.expect(response.message).contains("Deposit successful");
     });
+
 
 });

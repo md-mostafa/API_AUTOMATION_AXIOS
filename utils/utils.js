@@ -31,6 +31,25 @@ export function getRandomAgentFromFile(){
             return randomUser;
         }
     }
-    
-    
+}
+
+export function getRandomCustomerFromFile(){
+    while(true){
+        let randomNumber = generateNumber(0, userData.length);
+        let randomUser = userData[randomNumber];
+        if(randomUser.role == "Customer"){
+            return randomUser;
+        }
+    }
+}
+
+export function getTwoCustomersFromFile(){
+    while(true){
+        let customer1 = getRandomCustomerFromFile();
+        let customer2 = getRandomCustomerFromFile();
+
+        if(customer1.phone_number !== customer2.phone_number){
+            return [customer1, customer2]
+        }
+    }
 }
